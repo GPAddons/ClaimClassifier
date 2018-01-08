@@ -7,6 +7,7 @@ import me.ryanhamshire.GriefPrevention.Messages;
 import me.ryanhamshire.GriefPrevention.PlayerData;
 import me.ryanhamshire.GriefPrevention.TextMode;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,6 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -24,12 +27,12 @@ import static me.ryanhamshire.GriefPrevention.GriefPrevention.getfriendlyLocatio
  *
  * @author RoboMWM
  */
-public class ClaimListCommand implements CommandExecutor
+public class ClaimsListCommand implements CommandExecutor
 {
     JavaPlugin instance;
     DataStore dataStore;
 
-    public ClaimListCommand(JavaPlugin plugin, DataStore dataStore)
+    public ClaimsListCommand(JavaPlugin plugin, DataStore dataStore)
     {
         this.instance = plugin;
         this.dataStore = dataStore;
@@ -39,16 +42,9 @@ public class ClaimListCommand implements CommandExecutor
     {
         Player player = null;
         OfflinePlayer otherPlayer; //player whose claims will be listed
-        SortType sortType;
 
         if (sender instanceof Player)
             player = (Player)sender;
-
-        //Determine sort order, if specified
-        if (args.length >= 2)
-            sortType = determineSortOption(args[1]);
-        else if (args.length >= 1)
-            sortType = determineSortOption(args[0]);
 
         //if another player isn't specified, assume current player
         if(args.length < 1)
@@ -87,16 +83,29 @@ public class ClaimListCommand implements CommandExecutor
         if(claims.size() > 0)
         {
             GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.ClaimsListHeader);
+
+            //Insertion sort for now. If needed will utilize a more efficient algorithm
+            List<Claim> sortedClaims = new ArrayList<>(playerData.getClaims().size());
             StringBuilder claimBuilder = new StringBuilder();
             for (Claim claim : playerData.getClaims())
             {
-                
+                int index = 0;
+                for (Claim otherClaim : sortedClaims)
+                {
+                    if (isLesser(claim.getLesserBoundaryCorner(), otherClaim.getLesserBoundaryCorner()))
+                    {
+                        sortedClaims.add(index, claim);
+                        break;
+                    }
+                    index++;
+                }
+                if (index >= sortedClaims.size())
+                    sortedClaims.add(index, claim);
             }
-            for(int i = 0; i < playerData.getClaims().size(); i++)
-            {
-                Claim claim = playerData.getClaims().get(i);
+            //end sorting
+
+            for(Claim claim : sortedClaims)
                 GriefPrevention.sendMessage(player, ChatColor.AQUA, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
-            }
 
             GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
         }
@@ -116,19 +125,20 @@ public class ClaimListCommand implements CommandExecutor
         return instance.getServer().getOfflinePlayer(name);
     }
 
-    private SortType determineSortOption(String arg)
+    //pretty sure there's a better way to math this
+    private boolean isLesser(Location location, Location otherLocation)
     {
-        if (arg.equalsIgnoreCase("x"))
-            return SortType.X;
-        if (arg.equalsIgnoreCase("z"))
-            return SortType.Z;
-        return SortType.X; //sort via x coordinate by default
+        if (location.getBlockX() < otherLocation.getBlockX())
+            return true;
+        else if (location.getBlockX() > otherLocation.getBlockX())
+            return false;
+        else
+        {
+            if (location.getBlockZ() < otherLocation.getBlockZ())
+                return true;
+            else if (location.getBlockZ() > otherLocation.getBlockZ())
+                return false;
+        }
+        return false;
     }
-}
-
-enum SortType
-{
-    NONE,
-    X,
-    Z
 }
