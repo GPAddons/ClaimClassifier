@@ -1,11 +1,14 @@
-package me.robomwm.claimlistclassifier;
+package me.robomwm.claimslistclassifier;
 
-import me.robomwm.claimlistclassifier.command.ClaimsListCommand;
+import me.robomwm.claimslistclassifier.command.ClaimsListCommand;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  * @author RoboMWM
  */
-public class ClaimlistClassifier extends JavaPlugin implements Listener
+public class ClaimslistClassifier extends JavaPlugin implements Listener
 {
     CommandExecutor claimsListCommand;
     public void onEnable()
@@ -28,7 +31,7 @@ public class ClaimlistClassifier extends JavaPlugin implements Listener
     }
 
     //Other way is to hack into bukkit and remove the command from the commandmap
-    public void interceptClaimsListCommand(Player player, String msg)
+    public boolean interceptClaimsListCommand(CommandSender sender, String msg)
     {
         List<String> message = Arrays.asList(msg.split(" "));
         String command = message.get(0).toLowerCase().substring(1);
@@ -40,11 +43,22 @@ public class ClaimlistClassifier extends JavaPlugin implements Listener
             case "listclaims":
                 message.remove(0);
                 String[] args = (String[])message.toArray();
-                claimsListCommand.onCommand(player, null, command, args);
-                break;
+                claimsListCommand.onCommand(sender, null, command, args);
+                return true;
         }
+        return false;
     }
 
-    @
+    @EventHandler(ignoreCancelled = true)
+    private void onPlayerPreprocess(PlayerCommandPreprocessEvent event)
+    {
+        event.setCancelled(interceptClaimsListCommand(event.getPlayer(), event.getMessage()));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void onServerPreprocess(ServerCommandEvent event)
+    {
+        event.setCancelled(interceptClaimsListCommand(event.getSender(), "/" + event.getCommand()));
+    }
 
 }

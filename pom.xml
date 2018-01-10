@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.robomwm</groupId>
-    <artifactId>claimlistclassifier</artifactId>
+    <artifactId>claimslistclassifier</artifactId>
     <version>1.0</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

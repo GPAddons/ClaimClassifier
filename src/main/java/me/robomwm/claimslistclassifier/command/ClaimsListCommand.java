@@ -1,11 +1,10 @@
-package me.robomwm.claimlistclassifier.command;
+package me.robomwm.claimslistclassifier.command;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.Messages;
 import me.ryanhamshire.GriefPrevention.PlayerData;
-import me.ryanhamshire.GriefPrevention.TextMode;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -17,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.Vector;
 
 import static me.ryanhamshire.GriefPrevention.GriefPrevention.getfriendlyLocationString;

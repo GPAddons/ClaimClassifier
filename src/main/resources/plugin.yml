@@ -1,0 +1,13 @@
+name: ClaimslistClassifier
+main: me.robomwm.claimslistclassifier.ClaimslistClassifier
+depend: [GriefPrevention]
+version: ${project.version}
+author: RoboMWM
+website: https://github.com/robomwm
+commands:
+    claimslist:
+      description: Lists information about a player's claim blocks and claims.
+      usage: /ClaimsList or /ClaimsList <player>
+      aliases: [claimlist, listclaims]
+      permission: griefprevention.claims
+      
