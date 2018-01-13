@@ -43,7 +43,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
             case "claimlist":
             case "listclaims":
                 message.remove(0);
-                String[] args = (String[])message.toArray();
+                String[] args = message.toArray(new String[message.size()]);
                 claimsListCommand.onCommand(sender, null, command, args);
                 return true;
         }
