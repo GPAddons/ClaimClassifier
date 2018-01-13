@@ -8,6 +8,7 @@ import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import static me.ryanhamshire.GriefPrevention.GriefPrevention.getfriendlyLocationString;
@@ -83,27 +87,33 @@ public class ClaimsListCommand implements CommandExecutor
             GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.ClaimsListHeader);
 
             //Insertion sort for now. If needed will utilize a more efficient algorithm
-            List<Claim> sortedClaims = new ArrayList<>(playerData.getClaims().size());
-            StringBuilder claimBuilder = new StringBuilder();
+            Map<World, List<Claim>> sortedClaims = new LinkedHashMap<>();
+            for (World world : instance.getServer().getWorlds())
+            {
+                sortedClaims.put(world, new ArrayList<>());
+            }
+
             for (Claim claim : playerData.getClaims())
             {
+                World world = claim.getLesserBoundaryCorner().getWorld();
                 int index = 0;
-                for (Claim otherClaim : sortedClaims)
+                for (Claim otherClaim : sortedClaims.get(world))
                 {
                     if (isLesser(claim.getLesserBoundaryCorner(), otherClaim.getLesserBoundaryCorner()))
                     {
-                        sortedClaims.add(index, claim);
+                        sortedClaims.get(world).add(index, claim);
                         break;
                     }
                     index++;
                 }
                 if (index >= sortedClaims.size())
-                    sortedClaims.add(index, claim);
+                    sortedClaims.get(world).add(index, claim);
             }
             //end sorting
 
-            for(Claim claim : sortedClaims)
-                GriefPrevention.sendMessage(player, ChatColor.AQUA, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+            for (World world : sortedClaims.keySet())
+                for(Claim claim : sortedClaims.get(world))
+                    GriefPrevention.sendMessage(player, ChatColor.AQUA, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
 
             GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
         }

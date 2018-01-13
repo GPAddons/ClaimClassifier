@@ -12,6 +12,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
     //Other way is to hack into bukkit and remove the command from the commandmap
     public boolean interceptClaimsListCommand(CommandSender sender, String msg)
     {
-        List<String> message = Arrays.asList(msg.split(" "));
+        List<String> message = new LinkedList<>(Arrays.asList(msg.split(" ")));
         String command = message.get(0).toLowerCase().substring(1);
 
         switch (command)
