@@ -78,13 +78,13 @@ public class ClaimsListCommand implements CommandExecutor
         //load the target player's data
         PlayerData playerData = dataStore.getPlayerData(otherPlayer.getUniqueId());
         Vector<Claim> claims = playerData.getClaims();
-        GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.StartBlockMath,
+        GriefPrevention.sendMessage(player, ChatColor.YELLOW, Messages.StartBlockMath,
                 String.valueOf(playerData.getAccruedClaimBlocks()),
                 String.valueOf((playerData.getBonusClaimBlocks() + dataStore.getGroupBonusBlocks(otherPlayer.getUniqueId()))),
                 String.valueOf((playerData.getAccruedClaimBlocks() + playerData.getBonusClaimBlocks() + dataStore.getGroupBonusBlocks(otherPlayer.getUniqueId()))));
         if(claims.size() > 0)
         {
-            GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.ClaimsListHeader);
+            GriefPrevention.sendMessage(player, ChatColor.YELLOW, Messages.ClaimsListHeader);
 
             //Insertion sort for now. If needed will utilize a more efficient algorithm
             Map<World, List<Claim>> sortedClaims = new LinkedHashMap<>();
@@ -106,16 +106,16 @@ public class ClaimsListCommand implements CommandExecutor
                     }
                     index++;
                 }
-                if (index >= sortedClaims.size())
+                if (index >= sortedClaims.get(world).size())
                     sortedClaims.get(world).add(index, claim);
             }
             //end sorting
 
             for (World world : sortedClaims.keySet())
                 for(Claim claim : sortedClaims.get(world))
-                    GriefPrevention.sendMessage(player, ChatColor.AQUA, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
 
-            GriefPrevention.sendMessage(player, ChatColor.AQUA, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
+            GriefPrevention.sendMessage(player, ChatColor.YELLOW, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
         }
 
         return true;
