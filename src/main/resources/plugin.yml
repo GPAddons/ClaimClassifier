@@ -10,4 +10,8 @@ commands:
       usage: /ClaimsList or /ClaimsList <player>
       aliases: [claimlist, listclaims]
       permission: griefprevention.claims
-      
+    nameclaim:
+      description: Name a claim for easy recognition in /claimlist
+      usage: /NameClaim <name> - Name a claim for easy recognition in /claimlist
+      aliases: [claimname]
+      permission: griefprevention.claims

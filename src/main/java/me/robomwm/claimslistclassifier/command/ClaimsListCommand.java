@@ -1,5 +1,6 @@
 package me.robomwm.claimslistclassifier.command;
 
+import me.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -13,11 +14,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -31,10 +30,10 @@ import static me.ryanhamshire.GriefPrevention.GriefPrevention.getfriendlyLocatio
  */
 public class ClaimsListCommand implements CommandExecutor
 {
-    JavaPlugin instance;
-    DataStore dataStore;
+    private ClaimslistClassifier instance;
+    private DataStore dataStore;
 
-    public ClaimsListCommand(JavaPlugin plugin, DataStore dataStore)
+    public ClaimsListCommand(ClaimslistClassifier plugin, DataStore dataStore)
     {
         this.instance = plugin;
         this.dataStore = dataStore;
@@ -111,9 +110,18 @@ public class ClaimsListCommand implements CommandExecutor
             }
             //end sorting
 
+            String name;
+
             for (World world : sortedClaims.keySet())
                 for(Claim claim : sortedClaims.get(world))
-                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                {
+                    if (instance.getClaimNames() != null && instance.getClaimNames().get(claim.getID().toString()) != null)
+                        name = instance.getClaimNames().getString(claim.getID().toString()) + ": ";
+                    else
+                        name = "";
+                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, name + getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                }
+
 
             GriefPrevention.sendMessage(player, ChatColor.YELLOW, Messages.EndBlockMath, String.valueOf(playerData.getRemainingClaimBlocks()));
         }
