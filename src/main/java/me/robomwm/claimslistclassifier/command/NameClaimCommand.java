@@ -3,6 +3,7 @@ package me.robomwm.claimslistclassifier.command;
 import me.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -44,6 +45,12 @@ public class NameClaimCommand implements CommandExecutor
 
         if (claim == null || claim.ownerID != player.getUniqueId()) //oof more legacy GP ugliness
         {
+            if (player.isOp() && claim != null)
+            {
+                instance.getLogger().info(claim.ownerID.toString());
+                instance.getLogger().info(player.getUniqueId().toString());
+                instance.getLogger().info(String.valueOf(claim.ownerID == player.getUniqueId()) + String.valueOf(claim.ownerID.toString().equals(player.getUniqueId().toString())));
+            }
             player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
             return true;
         }

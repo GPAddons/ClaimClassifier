@@ -12,6 +12,6 @@ commands:
       permission: griefprevention.claims
     nameclaim:
       description: Name a claim for easy recognition in /claimlist
-      usage: /NameClaim <name> - Name a claim for easy recognition in /claimlist
+      usage: /NameClaim <name> - Name a claim for easy recognition in /claimslist
       aliases: [claimname]
       permission: griefprevention.claims

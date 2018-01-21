@@ -6,7 +6,7 @@
 
     <groupId>me.robomwm</groupId>
     <artifactId>claimslistclassifier</artifactId>
-    <version>1.2</version>
+    <version>1.2.debug</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
