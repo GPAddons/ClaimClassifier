@@ -45,8 +45,15 @@ public class NameClaimCommand implements CommandExecutor
 
         if (claim == null || claim.ownerID.equals(player.getUniqueId())) //oof more legacy GP ugliness
         {
-            player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
-            return true;
+            if (claim != null && claim.ownerID.toString().equals(player.getUniqueId().toString()))
+            {
+                instance.getLogger().info(String.valueOf(claim.ownerID.compareTo(player.getUniqueId())) + String.valueOf(claim.ownerID.equals(player.getUniqueId())) + String.valueOf(claim.ownerID.variant()) + String.valueOf(player.getUniqueId().variant()));
+            }
+            else
+            {
+                player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
+                return true;
+            }
         }
 
         instance.getClaimNames().set(claim.getID().toString(), StringUtils.join(args, " "));
