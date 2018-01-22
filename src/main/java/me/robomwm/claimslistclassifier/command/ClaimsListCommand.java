@@ -119,7 +119,7 @@ public class ClaimsListCommand implements CommandExecutor
                         name = instance.getClaimNames().getString(claim.getID().toString()) + ": ";
                     else
                         name = "";
-                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, name + getfriendlyLocationString(claim.getLesserBoundaryCorner()) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, getfriendlyLocationString(claim.getLesserBoundaryCorner(), name) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
                 }
 
 
@@ -156,5 +156,11 @@ public class ClaimsListCommand implements CommandExecutor
                 return false;
         }
         return false;
+    }
+
+    public String getfriendlyLocationString(Location location, String name) {
+        if (!name.isEmpty())
+            return location.getWorld().getName() + ": " + ChatColor.AQUA + name + ChatColor.YELLOW + ": x" + location.getBlockX() + ", z" + location.getBlockZ();
+        return location.getWorld().getName() + ": x" + location.getBlockX() + ", z" + location.getBlockZ();
     }
 }
