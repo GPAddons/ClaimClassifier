@@ -43,24 +43,37 @@ public class NameClaimCommand implements CommandExecutor
         Player player = (Player)sender;
         Claim claim = dataStore.getClaimAt(player.getLocation(), true, null);
 
+        if (player.isOp()) //Debug info always printed for an opped player
+            instance.getLogger().info("UUID#compareTo: " + String.valueOf(claim.ownerID.compareTo(player.getUniqueId())) + " " +
+                    "UUID#equals: " + String.valueOf(claim.ownerID.equals(player.getUniqueId())) + " " +
+                    "UUID#variant (claim): " + String.valueOf(claim.ownerID.variant()) + " " +
+                    "UUID#toString#equals: " + String.valueOf(claim.ownerID.toString().equals(player.getUniqueId().toString())) + " " +
+                    "UUID#variant (player): " + String.valueOf(player.getUniqueId().variant()) + "\n" +
+                    player.getLocation().toString()); // UUID#variant result (player)
+
         if (claim == null || claim.ownerID.equals(player.getUniqueId())) //oof more legacy GP ugliness
         {
-            if (claim != null && claim.ownerID.toString().equals(player.getUniqueId().toString()))
-            {
-                instance.getLogger().info(String.valueOf(claim.ownerID.compareTo(player.getUniqueId())) + String.valueOf(claim.ownerID.equals(player.getUniqueId())) + String.valueOf(claim.ownerID.variant()) + String.valueOf(player.getUniqueId().variant()));
-            }
-            else
-            {
-                player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
-                return true;
-            }
+            player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
+            return true;
         }
 
-        instance.getClaimNames().set(claim.getID().toString(), StringUtils.join(args, " "));
-        if (instance.saveClaimNames())
-            player.sendMessage(ChatColor.GREEN + "Claim successfully named as: " + StringUtils.join(args, " "));
-        else
+        switch (args[0].toLowerCase())
+        {
+            case "off":
+            case "clear":
+            case "remove":
+                instance.getClaimNames().set(claim.getID().toString(), null);
+                player.sendMessage(ChatColor.GREEN + "Claim name removed.");
+                break;
+            default:
+                instance.getClaimNames().set(claim.getID().toString(), StringUtils.join(args, " "));
+                player.sendMessage(ChatColor.GREEN + "Claim named as: " + StringUtils.join(args, " "));
+                break;
+        }
+
+        if (!instance.saveClaimNames())
             player.sendMessage(ChatColor.RED + "An error occurred while trying to save claim names. See server log for details.");
+
         return true;
     }
 }
