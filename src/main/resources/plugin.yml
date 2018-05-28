@@ -20,4 +20,3 @@ commands:
       usage: /trustedclaimslist
       aliases: [listtrustedclaims, trustedclaimlist, listtrustedclaim, listrustedclaims]
       permission: griefprevention.claims
-      
