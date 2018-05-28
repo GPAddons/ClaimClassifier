@@ -2,10 +2,12 @@ package me.robomwm.claimslistclassifier;
 
 import me.robomwm.claimslistclassifier.command.ClaimsListCommand;
 import me.robomwm.claimslistclassifier.command.NameClaimCommand;
+import me.robomwm.claimslistclassifier.listener.ConfirmAbandonClaimListener;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +39,18 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
 
     public void onEnable()
     {
+        List<String> abandonclaimCommands = new ArrayList<>();
+        abandonclaimCommands.add("/abandonclaim");
+        abandonclaimCommands.add("/unclaim");
+        abandonclaimCommands.add("/declaim");
+        abandonclaimCommands.add("/removeclaim");
+        abandonclaimCommands.add("/disclaim");
+        getConfig().addDefault("abandonclaim_commands", abandonclaimCommands);
+        ConfigurationSection section = getConfig().getConfigurationSection("messages");
+        if (section == null)
+            section = getConfig().createSection("messages");
+        section.addDefault("abandonclaim_prompt", "Are you sure you wish to abandon this claim? Type /abandonclaim again to confirm");
+        getConfig().options().copyDefaults(true);
         saveConfig();
 
         File storageFile = new File(this.getDataFolder(), "names.data");
@@ -59,6 +74,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         getCommand("claimslist").setExecutor(claimsListCommand);
         getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
         getServer().getPluginManager().registerEvents(this, this);
+        new ConfirmAbandonClaimListener(this, dataStore);
     }
 
     public void onDisable()
