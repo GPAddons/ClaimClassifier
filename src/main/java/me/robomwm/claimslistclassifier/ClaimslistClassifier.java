@@ -1,6 +1,7 @@
 package me.robomwm.claimslistclassifier;
 
 import me.robomwm.claimslistclassifier.command.ClaimsListCommand;
+import me.robomwm.claimslistclassifier.command.ListTrustedClaimsCommand;
 import me.robomwm.claimslistclassifier.command.NameClaimCommand;
 import me.robomwm.claimslistclassifier.listener.ConfirmAbandonClaimListener;
 import me.ryanhamshire.GriefPrevention.DataStore;
@@ -73,6 +74,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         claimsListCommand = new ClaimsListCommand(this, dataStore);
         getCommand("claimslist").setExecutor(claimsListCommand);
         getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
+        getCommand("trustedclaimslist").setExecutor(new ListTrustedClaimsCommand(this, dataStore));
         getServer().getPluginManager().registerEvents(this, this);
         new ConfirmAbandonClaimListener(this, dataStore);
     }

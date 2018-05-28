@@ -15,3 +15,9 @@ commands:
       usage: /NameClaim <name> - Name a claim for easy recognition in /claimslist
       aliases: [claimname]
       permission: griefprevention.claims
+    trustedclaimslist:
+      description: List claims you are /trusted to.
+      usage: /trustedclaimslist
+      aliases: [listtrustedclaims, trustedclaimlist, listtrustedclaim, listrustedclaims]
+      permission: griefprevention.claims
+      
