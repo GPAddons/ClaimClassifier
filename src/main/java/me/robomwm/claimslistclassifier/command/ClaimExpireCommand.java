@@ -109,10 +109,14 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
             return defaultExpiration;
 
         //Else do math based on when player last logged in
-        //default - (current - lastPlayed)
         long lastPlayed = player.getLastPlayed();
         plugin.getLogger().info("Server reports " + player.getName() + " played " + TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastPlayed) + " ago");
-        return (int)TimeUnit.MILLISECONDS.toDays(getDefaultExpirationInMillis() - lastPlayed);
+        
+        //Calculate absolute time this player's claims will expire
+        long expireTime = TimeUnit.DAYS.toMillis(defaultExpiration) + lastPlayed;
+        //Subtract current time to get remaining time left relative to now
+        expireTime = expireTime - System.currentTimeMillis();
+        return (int)TimeUnit.MILLISECONDS.toDays(expireTime);
     }
 
     public boolean extendExpiration(String uuidString, int days)
