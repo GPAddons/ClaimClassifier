@@ -32,7 +32,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
     {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        prolongedExpirationFile = new File(plugin.getDataFolder() + File.pathSeparator + "prolongedExpirations.yml");
+        prolongedExpirationFile = new File(plugin.getDataFolder() + File.separator + "prolongedExpirations.yml");
         prolongedExpiration = YamlConfiguration.loadConfiguration(prolongedExpirationFile);
         this.defaultExpiration = expiration;
     }
@@ -109,8 +109,10 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
             return defaultExpiration;
 
         //Else do math based on when player last logged in
+        //default - (current - lastPlayed)
         long lastPlayed = player.getLastPlayed();
-        return (int)TimeUnit.MILLISECONDS.toDays(getDefaultExpirationInMillis() - lastPlayed);
+        return (int)TimeUnit.MILLISECONDS.toDays(
+                getDefaultExpirationInMillis() - (System.currentTimeMillis() - lastPlayed));
     }
 
     public boolean extendExpiration(String uuidString, int days)
