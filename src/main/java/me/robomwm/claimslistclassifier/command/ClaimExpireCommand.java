@@ -69,7 +69,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         switch(args[0].toLowerCase())
         {
             case "check":
-                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " of inactivity.");
+                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " days of inactivity.");
                 return true;
             case "delay":
                 //No permissions to set delay
@@ -85,7 +85,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
                     return false;
                 }
                 sender.sendMessage("Successfully extended " + player.getName() + "'s expiration days.");
-                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " of inactivity.");
+                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " days of inactivity.");
                 return true;
         }
         return false;
@@ -101,7 +101,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         long extendedExpiration = prolongedExpiration.getLong(player.getUniqueId().toString());
         if (extendedExpiration > getDefaultExpirationInMillis())
         {
-            return (int)TimeUnit.MILLISECONDS.toDays(extendedExpiration);
+            return (int)TimeUnit.MILLISECONDS.toDays(extendedExpiration - System.currentTimeMillis());
         }
 
         //Return the default expiration if the player is online
