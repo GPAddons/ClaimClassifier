@@ -4,6 +4,7 @@ depend: [GriefPrevention]
 version: ${project.version}
 author: RoboMWM
 website: https://github.com/robomwm
+api-version: 1.13
 commands:
     claimslist:
       description: Lists information about a player's claim blocks and claims.
