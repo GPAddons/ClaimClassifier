@@ -21,3 +21,7 @@ commands:
       usage: /trustedclaimslist
       aliases: [listtrustedclaims, trustedclaimlist, listtrustedclaim, listrustedclaims]
       permission: griefprevention.claims
+    claimexpire:
+      description: Allows you to view or alter claim expiration extensions
+      usage: /claimexpire <check|delay> [player...] <days>
+      aliases: [expireclaim]

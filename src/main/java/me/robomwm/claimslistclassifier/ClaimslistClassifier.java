@@ -1,5 +1,6 @@
 package me.robomwm.claimslistclassifier;
 
+import me.robomwm.claimslistclassifier.command.ClaimExpireCommand;
 import me.robomwm.claimslistclassifier.command.ClaimsListCommand;
 import me.robomwm.claimslistclassifier.command.ListTrustedClaimsCommand;
 import me.robomwm.claimslistclassifier.command.NameClaimCommand;
@@ -70,11 +71,13 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         }
         claimNames = YamlConfiguration.loadConfiguration(storageFile);
 
-        DataStore dataStore = ((GriefPrevention)getServer().getPluginManager().getPlugin("GriefPrevention")).dataStore;
+        GriefPrevention griefPrevention = (GriefPrevention)getServer().getPluginManager().getPlugin("GriefPrevention");
+        DataStore dataStore = griefPrevention.dataStore;
         claimsListCommand = new ClaimsListCommand(this, dataStore);
         getCommand("claimslist").setExecutor(claimsListCommand);
         getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
         getCommand("trustedclaimslist").setExecutor(new ListTrustedClaimsCommand(this, dataStore));
+        getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays));
         getServer().getPluginManager().registerEvents(this, this);
         new ConfirmAbandonClaimListener(this, dataStore);
     }
