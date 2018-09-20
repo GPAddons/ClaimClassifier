@@ -42,9 +42,10 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         return TimeUnit.DAYS.toMillis(defaultExpiration) + System.currentTimeMillis();
     }
 
-    OfflinePlayer getPlayer(CommandSender sender, String[] args, int i)
+    //This is a stupid idea
+    OfflinePlayer getPlayer(CommandSender sender, String[] args, int i, int maxSize)
     {
-        if (args.length > i)
+        if (args.length > i && args.length >= maxSize)
             return plugin.getServer().getOfflinePlayer(args[i]);
         if (sender instanceof Player)
             return (OfflinePlayer)sender;
@@ -56,23 +57,22 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         if (args.length == 0)
             return false;
 
-        OfflinePlayer player = getPlayer(sender, args, 1);
-
-        //Command requires a player
-        if (player == null)
-            return false;
-
-        //No permissions to check others
-        if (player != sender && !sender.isOp())
-            return false;
+        OfflinePlayer player;
 
         switch(args[0].toLowerCase())
         {
             case "check":
+                player = getPlayer(sender, args, 1, 2);
+                if (player == null)
+                    return false;
+                if (player != sender && !sender.isOp())
+                    return false;
                 sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " days of inactivity.");
                 return true;
             case "delay":
-                //No permissions to set delay
+                player = getPlayer(sender, args, 1, 3);
+                if (player == null)
+                    return false;
                 if (!sender.isOp())
                     return false;
                 try
