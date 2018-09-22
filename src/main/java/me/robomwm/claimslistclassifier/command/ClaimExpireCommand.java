@@ -1,6 +1,8 @@
 package me.robomwm.claimslistclassifier.command;
 
+import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.events.ClaimExpirationEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,14 +29,16 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
     private JavaPlugin plugin;
     private File prolongedExpirationFile;
     private YamlConfiguration prolongedExpiration;
+    private DataStore dataStore;
 
-    public ClaimExpireCommand(JavaPlugin plugin, int expiration)
+    public ClaimExpireCommand(JavaPlugin plugin, int expiration, DataStore dataStore)
     {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         prolongedExpirationFile = new File(plugin.getDataFolder() + File.separator + "prolongedExpirations.yml");
         prolongedExpiration = YamlConfiguration.loadConfiguration(prolongedExpirationFile);
         this.defaultExpiration = expiration;
+        this.dataStore = dataStore;
     }
 
     long getDefaultExpirationInMillis()
@@ -67,7 +71,13 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
                     return false;
                 if (player != sender && !sender.isOp())
                     return false;
-                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " days of inactivity.");
+                int daysToExpire = getExpirationDays(player);
+                if (daysToExpire >= 0)
+                    sender.sendMessage(player.getName() + "'s claims will expire after " + daysToExpire + " days of inactivity.");
+                else if (!dataStore.getPlayerData(player.getUniqueId()).getClaims().isEmpty())
+                    sender.sendMessage(player.getName() + "'s claims are pending expiration.");
+                else
+                    sender.sendMessage(player.getName() + "'s claims have expired due to inactivity.");
                 return true;
             case "delay":
                 player = getPlayer(sender, args, 1, 3);
@@ -146,7 +156,14 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
     private void onClaimExpire(ClaimExpirationEvent event)
     {
         //Cancel if the expiration time is greater than the current time (expiration is in the future)
-        event.setCancelled(prolongedExpiration.getLong(event.getClaim().ownerID.toString()) > System.currentTimeMillis());
+        if (prolongedExpiration.getLong(event.getClaim().ownerID.toString()) > System.currentTimeMillis())
+            event.setCancelled(true);
+        else
+        {
+            OfflinePlayer player = plugin.getServer().getOfflinePlayer(event.getClaim().ownerID);
+            if (player.getName() != null)
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), "mail send " + player.getName() + " Your old claims have expired due to inactivity. A grace period for new claims can be checked by typing the command " + ChatColor.GREEN + "/claimexpire check");
+        }
     }
 
 }

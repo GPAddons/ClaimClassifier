@@ -77,7 +77,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         getCommand("claimslist").setExecutor(claimsListCommand);
         getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
         getCommand("trustedclaimslist").setExecutor(new ListTrustedClaimsCommand(this, dataStore));
-        getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays));
+        getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
         getServer().getPluginManager().registerEvents(this, this);
         new ConfirmAbandonClaimListener(this, dataStore);
     }
