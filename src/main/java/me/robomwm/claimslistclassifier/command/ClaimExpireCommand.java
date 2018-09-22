@@ -157,7 +157,10 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
     {
         //Cancel if the expiration time is greater than the current time (expiration is in the future)
         if (prolongedExpiration.getLong(event.getClaim().ownerID.toString()) > System.currentTimeMillis())
+        {
+            plugin.getLogger().info("Prevented a claim owned by player UUID " + event.getClaim().ownerID.toString() + " from expiring.");
             event.setCancelled(true);
+        }
         else
         {
             OfflinePlayer player = plugin.getServer().getOfflinePlayer(event.getClaim().ownerID);
