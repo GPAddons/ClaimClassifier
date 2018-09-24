@@ -88,7 +88,10 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
                 try
                 {
                     if (!extendExpiration(player.getUniqueId().toString(), Integer.valueOf(args[args.length - 1])))
+                    {
                         sender.sendMessage("Failed to save delay extension. See console for details.");
+                        return false;
+                    }
                 }
                 catch (NumberFormatException e)
                 {
@@ -115,16 +118,13 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
      */
     private int getExpirationDays(OfflinePlayer player)
     {
-        //First return what we have stored, if it's longer than the default expiration
-        long extendedExpiration = prolongedExpiration.getLong(player.getUniqueId().toString());
-        if (extendedExpiration > getDefaultExpirationInMillis())
-        {
-            return (int)TimeUnit.MILLISECONDS.toDays(extendedExpiration - System.currentTimeMillis());
-        }
+        //Return the stored delay value, if that's longer than the calculated expirations
+        long extendedExpirationTime = prolongedExpiration.getLong(player.getUniqueId().toString());
+        final int extendedExpirationRemainingInDays = (int)TimeUnit.MILLISECONDS.toDays(extendedExpirationTime - System.currentTimeMillis());
 
         //Return the default expiration if the player is online
         if (player.isOnline())
-            return defaultExpiration;
+            return Math.max(defaultExpiration, extendedExpirationRemainingInDays);
 
         //Else do math based on when player last logged in
         long lastPlayed = player.getLastPlayed();
@@ -134,7 +134,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         long expireTime = TimeUnit.DAYS.toMillis(defaultExpiration) + lastPlayed;
         //Subtract current time to get remaining time left relative to now
         expireTime = expireTime - System.currentTimeMillis();
-        return (int)TimeUnit.MILLISECONDS.toDays(expireTime);
+        return Math.max((int)TimeUnit.MILLISECONDS.toDays(expireTime), extendedExpirationRemainingInDays);
     }
 
     private boolean extendExpiration(String uuidString, int days)
@@ -167,6 +167,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         if (prolongedExpiration.getLong(event.getClaim().ownerID.toString()) > System.currentTimeMillis())
         {
             plugin.getLogger().info("Prevented a claim owned by player UUID " + event.getClaim().ownerID.toString() + " from expiring.");
+            plugin.getLogger().info("Planned expiration time: " + prolongedExpiration.getLong(event.getClaim().ownerID.toString()) + " is greater than current time " + System.currentTimeMillis());
             event.setCancelled(true);
         }
         else
