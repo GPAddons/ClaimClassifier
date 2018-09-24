@@ -73,7 +73,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
                     return false;
                 int daysToExpire = getExpirationDays(player);
                 if (daysToExpire >= 0)
-                    sender.sendMessage(player.getName() + "'s claims will expire after " + daysToExpire + " days of inactivity.");
+                    sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDaysAsString(player) + " of inactivity.");
                 else if (!dataStore.getPlayerData(player.getUniqueId()).getClaims().isEmpty())
                     sender.sendMessage(player.getName() + "'s claims are pending expiration.");
                 else
@@ -95,17 +95,25 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
                     return false;
                 }
                 sender.sendMessage("Successfully extended " + player.getName() + "'s expiration days.");
-                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDays(player) + " days of inactivity.");
+                sender.sendMessage(player.getName() + "'s claims will expire after " + getExpirationDaysAsString(player) + " of inactivity.");
                 return true;
         }
         return false;
+    }
+
+    private String getExpirationDaysAsString(OfflinePlayer player)
+    {
+        int days = getExpirationDays(player);
+        if (days == 1)
+            return days + " day";
+        return days + " days";
     }
 
     /**
      * @param player can be null
      * @return remaining days, rounded down
      */
-    public int getExpirationDays(OfflinePlayer player)
+    private int getExpirationDays(OfflinePlayer player)
     {
         //First return what we have stored, if it's longer than the default expiration
         long extendedExpiration = prolongedExpiration.getLong(player.getUniqueId().toString());
@@ -120,7 +128,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
 
         //Else do math based on when player last logged in
         long lastPlayed = player.getLastPlayed();
-        plugin.getLogger().info("Server reports " + player.getName() + " played " + TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastPlayed) + " ago");
+        plugin.getLogger().info("Server reports " + player.getName() + " played " + TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - lastPlayed) + " day(s) ago");
         
         //Calculate absolute time this player's claims will expire
         long expireTime = TimeUnit.DAYS.toMillis(defaultExpiration) + lastPlayed;
@@ -129,7 +137,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         return (int)TimeUnit.MILLISECONDS.toDays(expireTime);
     }
 
-    public boolean extendExpiration(String uuidString, int days)
+    private boolean extendExpiration(String uuidString, int days)
     {
         long currentDelay = prolongedExpiration.getLong(uuidString);
         if (currentDelay <= System.currentTimeMillis())
@@ -138,7 +146,7 @@ public class ClaimExpireCommand implements Listener, CommandExecutor
         return save();
     }
 
-    public boolean save()
+    private boolean save()
     {
         try
         {
