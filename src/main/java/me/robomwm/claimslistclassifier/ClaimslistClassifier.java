@@ -41,19 +41,19 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
 
     public void onEnable()
     {
-        List<String> abandonclaimCommands = new ArrayList<>();
-        abandonclaimCommands.add("/abandonclaim");
-        abandonclaimCommands.add("/unclaim");
-        abandonclaimCommands.add("/declaim");
-        abandonclaimCommands.add("/removeclaim");
-        abandonclaimCommands.add("/disclaim");
-        getConfig().addDefault("abandonclaim_commands", abandonclaimCommands);
-        ConfigurationSection section = getConfig().getConfigurationSection("messages");
-        if (section == null)
-            section = getConfig().createSection("messages");
-        section.addDefault("abandonclaim_prompt", "Are you sure you wish to abandon this claim? Type /abandonclaim again to confirm");
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+//        List<String> abandonclaimCommands = new ArrayList<>();
+//        abandonclaimCommands.add("/abandonclaim");
+//        abandonclaimCommands.add("/unclaim");
+//        abandonclaimCommands.add("/declaim");
+//        abandonclaimCommands.add("/removeclaim");
+//        abandonclaimCommands.add("/disclaim");
+//        getConfig().addDefault("abandonclaim_commands", abandonclaimCommands);
+//        ConfigurationSection section = getConfig().getConfigurationSection("messages");
+//        if (section == null)
+//            section = getConfig().createSection("messages");
+//        section.addDefault("abandonclaim_prompt", "Are you sure you wish to abandon this claim? Type /abandonclaim again to confirm");
+//        getConfig().options().copyDefaults(true);
+//        saveConfig();
 
         File storageFile = new File(this.getDataFolder(), "names.data");
         if (!storageFile.exists())
@@ -79,7 +79,7 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         getCommand("trustedclaimslist").setExecutor(new ListTrustedClaimsCommand(this, dataStore));
         getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
         getServer().getPluginManager().registerEvents(this, this);
-        new ConfirmAbandonClaimListener(this, dataStore);
+        //new ConfirmAbandonClaimListener(this, dataStore);
     }
 
     public void onDisable()
