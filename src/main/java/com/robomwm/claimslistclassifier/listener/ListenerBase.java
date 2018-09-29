@@ -1,5 +1,6 @@
 package com.robomwm.claimslistclassifier.listener;
 
+import com.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.event.Listener;
@@ -12,11 +13,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class ListenerBase implements Listener
 {
-    protected JavaPlugin plugin;
+    protected ClaimslistClassifier plugin;
     protected GriefPrevention griefPrevention;
     protected DataStore dataStore;
 
-    public ListenerBase(JavaPlugin plugin, GriefPrevention griefPrevention, DataStore dataStore)
+    public ListenerBase(ClaimslistClassifier plugin, GriefPrevention griefPrevention, DataStore dataStore)
     {
         this.plugin = plugin;
         this.griefPrevention = griefPrevention;

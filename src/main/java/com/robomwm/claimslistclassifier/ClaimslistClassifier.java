@@ -4,6 +4,8 @@ import com.robomwm.claimslistclassifier.command.ClaimExpireCommand;
 import com.robomwm.claimslistclassifier.command.ClaimsListCommand;
 import com.robomwm.claimslistclassifier.command.CommandBase;
 import com.robomwm.claimslistclassifier.command.NameClaimCommand;
+import com.robomwm.claimslistclassifier.command.TrustedClaimsListCommand;
+import com.robomwm.claimslistclassifier.listener.ConfirmAbandonClaimListener;
 import com.robomwm.claimslistclassifier.listener.ListenerBase;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -59,6 +61,9 @@ public class ClaimslistClassifier extends JavaPlugin
             getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
             getLogger().info("Enabled claimExpireDelay");
         }
+
+        enableCommand("trustedclaimslist", new TrustedClaimsListCommand(this, griefPrevention, dataStore));
+        enableListener(new ConfirmAbandonClaimListener(this, griefPrevention, dataStore));
 
         getConfig().options().copyDefaults(true);
         saveConfig();
