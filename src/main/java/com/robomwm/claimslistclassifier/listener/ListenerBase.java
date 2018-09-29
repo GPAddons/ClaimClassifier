@@ -21,6 +21,10 @@ public abstract class ListenerBase implements Listener
         this.plugin = plugin;
         this.griefPrevention = griefPrevention;
         this.dataStore = dataStore;
+    }
+
+    public void registerListeners()
+    {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 }

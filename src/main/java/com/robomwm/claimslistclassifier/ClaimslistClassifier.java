@@ -43,6 +43,7 @@ public class ClaimslistClassifier extends JavaPlugin
         {
             claimsListCommand = new ClaimsListCommand(this, dataStore);
             getCommand("claimslist").setExecutor(claimsListCommand);
+            getLogger().info("Enabled sorted claimslist");
         }
 
         if (getConfig().getBoolean("claimNaming", true))
@@ -50,11 +51,13 @@ public class ClaimslistClassifier extends JavaPlugin
             File storageFile = new File(this.getDataFolder(), "names.data");
             claimNames = YamlConfiguration.loadConfiguration(storageFile);
             getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
+            getLogger().info("Enabled claimNaming");
         }
 
         if (getConfig().getBoolean("claimExpireDelay", false))
         {
             getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
+            getLogger().info("Enabled claimExpireDelay");
         }
 
         getConfig().options().copyDefaults(true);
@@ -105,6 +108,7 @@ public class ClaimslistClassifier extends JavaPlugin
         getConfig().addDefault(listenerBase.getClass().getSimpleName(), false);
         if (getConfig().getBoolean(listenerBase.getClass().getSimpleName(), false))
         {
+            listenerBase.registerListeners();
             getLogger().info("Enabled " + listenerBase.getClass().getSimpleName());
         }
     }
