@@ -1,6 +1,6 @@
-package me.robomwm.claimslistclassifier.command;
+package com.robomwm.claimslistclassifier.command;
 
-import me.robomwm.claimslistclassifier.ClaimslistClassifier;
+import com.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;

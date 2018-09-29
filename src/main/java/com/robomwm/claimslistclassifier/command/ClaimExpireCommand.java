@@ -1,4 +1,4 @@
-package me.robomwm.claimslistclassifier.command;
+package com.robomwm.claimslistclassifier.command;
 
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.events.ClaimExpirationEvent;

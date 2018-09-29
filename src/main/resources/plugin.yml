@@ -1,5 +1,5 @@
 name: ClaimslistClassifier
-main: me.robomwm.claimslistclassifier.ClaimslistClassifier
+main: com.robomwm.claimslistclassifier.ClaimslistClassifier
 depend: [GriefPrevention]
 version: ${project.version}
 author: RoboMWM
