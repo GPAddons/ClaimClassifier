@@ -74,7 +74,7 @@ public class ClaimslistClassifier extends JavaPlugin
 
             for (String key : getConfig().getKeys(false))
             {
-                metrics.addCustomChart(new Metrics.SimplePie(key, new Callable<String>()
+                metrics.addCustomChart(new Metrics.SimplePie(key.toLowerCase(), new Callable<String>()
                 {
                     @Override
                     public String call() throws Exception
