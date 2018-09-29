@@ -6,26 +6,17 @@ import me.robomwm.claimslistclassifier.command.NameClaimCommand;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created on 1/1/2018.
  *
  * @author RoboMWM
  */
-public class ClaimslistClassifier extends JavaPlugin implements Listener
+public class ClaimslistClassifier extends JavaPlugin
 {
     private CommandExecutor claimsListCommand;
     private YamlConfiguration claimNames;
@@ -37,30 +28,40 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
 
     public void onEnable()
     {
-
-        File storageFile = new File(this.getDataFolder(), "names.data");
-        if (!storageFile.exists())
-        {
-            try
-            {
-                storageFile.createNewFile();
-            }
-            catch (IOException e)
-            {
-                this.getLogger().severe("Could not create names.data! Claim naming will be disabled.");
-                e.printStackTrace();
-                return;
-            }
-        }
-        claimNames = YamlConfiguration.loadConfiguration(storageFile);
-
         GriefPrevention griefPrevention = (GriefPrevention)getServer().getPluginManager().getPlugin("GriefPrevention");
         DataStore dataStore = griefPrevention.dataStore;
-        claimsListCommand = new ClaimsListCommand(this, dataStore);
-        getCommand("claimslist").setExecutor(claimsListCommand);
-        getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
-        getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
-        getServer().getPluginManager().registerEvents(this, this);
+
+        getConfig().addDefault("claimListSorting", true);
+        getConfig().addDefault("claimNaming", true);
+        getConfig().addDefault("claimExpireDelay", false);
+
+        if (getConfig().getBoolean("claimListSorting", true))
+        {
+            claimsListCommand = new ClaimsListCommand(this, dataStore);
+            getCommand("claimslist").setExecutor(claimsListCommand);
+        }
+
+        if (getConfig().getBoolean("claimNaming", true))
+        {
+            File storageFile = new File(this.getDataFolder(), "names.data");
+            claimNames = YamlConfiguration.loadConfiguration(storageFile);
+            getCommand("nameclaim").setExecutor(new NameClaimCommand(this, dataStore));
+        }
+
+        if (getConfig().getBoolean("claimExpireDelay", false))
+        {
+            getCommand("claimexpire").setExecutor(new ClaimExpireCommand(this, griefPrevention.config_claims_expirationDays, dataStore));
+        }
+
+        Class clazz = ClaimExpireCommand.class;
+    }
+
+    private void initConfig()
+    {
+
+
+        getConfig().options().copyDefaults(true);
+        saveConfig();
     }
 
     public void onDisable()
@@ -83,36 +84,4 @@ public class ClaimslistClassifier extends JavaPlugin implements Listener
         }
         return true;
     }
-
-    //Other way is to hack into bukkit and remove the command from the commandmap
-    public boolean interceptClaimsListCommand(CommandSender sender, String msg)
-    {
-        List<String> message = new LinkedList<>(Arrays.asList(msg.split(" ")));
-        String command = message.get(0).toLowerCase().substring(1);
-
-        switch (command)
-        {
-            case "claimslist":
-            case "claimlist":
-            case "listclaims":
-                message.remove(0);
-                String[] args = message.toArray(new String[message.size()]);
-                claimsListCommand.onCommand(sender, null, command, args);
-                return true;
-        }
-        return false;
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void onPlayerPreprocess(PlayerCommandPreprocessEvent event)
-    {
-        event.setCancelled(interceptClaimsListCommand(event.getPlayer(), event.getMessage()));
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void onServerPreprocess(ServerCommandEvent event)
-    {
-        event.setCancelled(interceptClaimsListCommand(event.getSender(), "/" + event.getCommand()));
-    }
-
 }

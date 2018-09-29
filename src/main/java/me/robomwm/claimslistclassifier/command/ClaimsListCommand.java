@@ -14,21 +14,25 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import static me.ryanhamshire.GriefPrevention.GriefPrevention.getfriendlyLocationString;
 
 /**
  * Created on 1/1/2018.
  *
  * @author RoboMWM
  */
-public class ClaimsListCommand implements CommandExecutor
+public class ClaimsListCommand implements CommandExecutor, Listener
 {
     private ClaimslistClassifier instance;
     private DataStore dataStore;
@@ -37,6 +41,7 @@ public class ClaimsListCommand implements CommandExecutor
     {
         this.instance = plugin;
         this.dataStore = dataStore;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -162,5 +167,36 @@ public class ClaimsListCommand implements CommandExecutor
         if (!name.isEmpty())
             return location.getWorld().getName() + ": " + ChatColor.AQUA + name + ChatColor.YELLOW + ": x" + location.getBlockX() + ", z" + location.getBlockZ();
         return location.getWorld().getName() + ": x" + location.getBlockX() + ", z" + location.getBlockZ();
+    }
+
+    //Other way is to hack into bukkit and remove the command from the commandmap
+    public boolean interceptClaimsListCommand(CommandSender sender, String msg)
+    {
+        List<String> message = new LinkedList<>(Arrays.asList(msg.split(" ")));
+        String command = message.get(0).toLowerCase().substring(1);
+
+        switch (command)
+        {
+            case "claimslist":
+            case "claimlist":
+            case "listclaims":
+                message.remove(0);
+                String[] args = message.toArray(new String[message.size()]);
+                this.onCommand(sender, null, command, args);
+                return true;
+        }
+        return false;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void onPlayerPreprocess(PlayerCommandPreprocessEvent event)
+    {
+        event.setCancelled(interceptClaimsListCommand(event.getPlayer(), event.getMessage()));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    private void onServerPreprocess(ServerCommandEvent event)
+    {
+        event.setCancelled(interceptClaimsListCommand(event.getSender(), "/" + event.getCommand()));
     }
 }
