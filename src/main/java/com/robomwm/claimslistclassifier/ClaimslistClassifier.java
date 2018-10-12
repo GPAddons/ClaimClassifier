@@ -62,7 +62,7 @@ public class ClaimslistClassifier extends JavaPlugin
             getLogger().info("Enabled claimExpireDelay");
         }
 
-        enableCommand("trustedclaimslist", new TrustedClaimsListCommand(this, griefPrevention, dataStore));
+        enableCommand(new TrustedClaimsListCommand(this, griefPrevention, dataStore));
         enableListener(new ConfirmAbandonClaimListener(this, griefPrevention, dataStore));
 
         getConfig().options().copyDefaults(true);
@@ -95,12 +95,12 @@ public class ClaimslistClassifier extends JavaPlugin
         catch (Throwable ignored){}
     }
 
-    private void enableCommand(String command, CommandBase commandBase)
+    private void enableCommand(CommandBase commandBase)
     {
         getConfig().addDefault(commandBase.getClass().getSimpleName(), false);
         if (getConfig().getBoolean(commandBase.getClass().getSimpleName(), false))
         {
-            getCommand(command).setExecutor(commandBase);
+            commandBase.registerCommand();
             if (commandBase.registerListeners())
                 getLogger().info("Enabled " + commandBase.getClass().getSimpleName() + " and applicable listeners.");
             else

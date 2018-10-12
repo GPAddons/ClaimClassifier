@@ -33,6 +33,12 @@ public class TrustedClaimsListCommand extends CommandBase
     }
 
     @Override
+    public void registerCommand()
+    {
+        plugin.getCommand("trustedclaimslist").setExecutor(this);
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (!(sender instanceof Player))

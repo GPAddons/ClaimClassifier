@@ -28,6 +28,13 @@ public abstract class CommandBase implements CommandExecutor, Listener
         this.dataStore = dataStore;
     }
 
+    public abstract void registerCommand();
+
+    protected void registerCommand(String command)
+    {
+        plugin.getCommand(command).setExecutor(this);
+    }
+
     public boolean registerListeners()
     {
         if (!isListener)
