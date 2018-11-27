@@ -1,6 +1,7 @@
 package com.robomwm.claimslistclassifier.command;
 
 import com.robomwm.claimslistclassifier.ClaimslistClassifier;
+import com.robomwm.claimslistclassifier.LazyText;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -124,7 +125,22 @@ public class ClaimsListCommand implements CommandExecutor, Listener
                         name = instance.getClaimNames().getString(claim.getID().toString()) + ": ";
                     else
                         name = "";
-                    GriefPrevention.sendMessage(player, ChatColor.YELLOW, getfriendlyLocationString(claim.getLesserBoundaryCorner(), name) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
+                    if (instance.getConfig().getBoolean("ClickableClaimslist"))
+                    {
+                        Location middle = claim.getGreaterBoundaryCorner().clone();
+                        middle.setX(getMiddle(claim.getLesserBoundaryCorner().getBlockX(), middle.getBlockX()));
+                        middle.setZ(getMiddle(claim.getLesserBoundaryCorner().getBlockZ(), middle.getBlockZ()));
+                        LazyText.Builder builder = new LazyText.Builder()
+                                .add(getfriendlyLocationString(claim.getLesserBoundaryCorner(), name))
+                                .color(net.md_5.bungee.api.ChatColor.YELLOW)
+                                .suggest("/tp " + middle.getBlockX() +
+                                        " " + middle.getBlockY() + " " +
+                                        middle.getBlockZ(), true)
+                                .add(dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())))
+                                .color(net.md_5.bungee.api.ChatColor.YELLOW);
+                    }
+                    else
+                        GriefPrevention.sendMessage(player, ChatColor.YELLOW, getfriendlyLocationString(claim.getLesserBoundaryCorner(), name) + dataStore.getMessage(Messages.ContinueBlockMath, String.valueOf(claim.getArea())));
                 }
 
 
@@ -198,5 +214,10 @@ public class ClaimsListCommand implements CommandExecutor, Listener
     private void onServerPreprocess(ServerCommandEvent event)
     {
         event.setCancelled(interceptClaimsListCommand(event.getSender(), "/" + event.getCommand()));
+    }
+
+    private int getMiddle(int lesser, int greater)
+    {
+        return lesser + (greater - lesser / 2);
     }
 }

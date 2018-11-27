@@ -38,6 +38,7 @@ public class ClaimslistClassifier extends JavaPlugin
         DataStore dataStore = griefPrevention.dataStore;
 
         getConfig().addDefault("claimListSorting", true);
+        getConfig().addDefault("ClickableClaimslist", false);
         getConfig().addDefault("claimNaming", true);
         getConfig().addDefault("claimExpireDelay", false);
 
