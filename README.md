@@ -5,7 +5,7 @@ Current features (each feature can be disabled in config):
 - List all claims you are trusted to.
 - Manually extend expiration of inactive claims
 
-Project page: coming soon
+Project page (includes downloads): https://dev.bukkit.org/projects/claimclassifier
 
 [Commands and permissions reference](src/main/resources/plugin.yml)
 
