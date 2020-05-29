@@ -6,7 +6,7 @@
 
     <groupId>me.robomwm</groupId>
     <artifactId>claimslistclassifier</artifactId>
-    <version>1.6</version>
+    <version>1.7.0</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -71,14 +71,14 @@
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.13.1-R0.1-SNAPSHOT</version>
+            <version>1.15.2-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.TechFortress</groupId>
             <artifactId>GriefPrevention</artifactId>
-            <version>16.10</version>
+            <version>16.13.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

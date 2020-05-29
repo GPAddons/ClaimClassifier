@@ -1,6 +1,7 @@
 package com.robomwm.claimslistclassifier;
 
 import com.robomwm.claimslistclassifier.command.ClaimExpireCommand;
+import com.robomwm.claimslistclassifier.command.ClaimTopCommand;
 import com.robomwm.claimslistclassifier.command.ClaimsListCommand;
 import com.robomwm.claimslistclassifier.command.CommandBase;
 import com.robomwm.claimslistclassifier.command.NameClaimCommand;
@@ -64,6 +65,7 @@ public class ClaimslistClassifier extends JavaPlugin
         }
 
         enableCommand(new TrustedClaimsListCommand(this, griefPrevention, dataStore));
+        enableCommand(new ClaimTopCommand(this));
         enableListener(new ConfirmAbandonClaimListener(this, griefPrevention, dataStore));
 
         getConfig().options().copyDefaults(true);
