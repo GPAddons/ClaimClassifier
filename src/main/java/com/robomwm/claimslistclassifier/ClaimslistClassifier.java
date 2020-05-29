@@ -73,7 +73,7 @@ public class ClaimslistClassifier extends JavaPlugin
 
         try
         {
-            Metrics metrics = new Metrics(this);
+            Metrics metrics = new Metrics(this, 3347);
             metrics.addCustomChart(new Metrics.SimplePie("bukkit_impl", new Callable<String>()
             {
                 @Override
