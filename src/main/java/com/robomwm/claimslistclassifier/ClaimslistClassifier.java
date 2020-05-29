@@ -65,7 +65,7 @@ public class ClaimslistClassifier extends JavaPlugin
         }
 
         enableCommand(new TrustedClaimsListCommand(this, griefPrevention, dataStore));
-        enableCommand(new ClaimTopCommand(this));
+        enableCommand(new ClaimTopCommand(this, griefPrevention, dataStore));
         enableListener(new ConfirmAbandonClaimListener(this, griefPrevention, dataStore));
 
         getConfig().options().copyDefaults(true);
