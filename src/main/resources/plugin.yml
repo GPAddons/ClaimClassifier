@@ -1,27 +1,30 @@
 name: ClaimslistClassifier
 main: com.robomwm.claimslistclassifier.ClaimslistClassifier
 depend: [GriefPrevention]
-version: ${project.version}
+version: '${project.version}'
 author: RoboMWM
 website: https://github.com/robomwm
-api-version: 1.13
+api-version: '1.13'
 commands:
-    claimslist:
-      description: Lists information about a player's claim blocks and claims.
-      usage: /ClaimsList or /ClaimsList <player>
-      aliases: [claimlist, listclaims]
-      permission: griefprevention.claims
-    nameclaim:
-      description: Name a claim for easy recognition in /claimlist
-      usage: /NameClaim <name> - Name a claim for easy recognition in /claimslist
-      aliases: [claimname]
-      permission: griefprevention.claims
-    trustedclaimslist:
-      description: List claims you are /trusted to.
-      usage: /trustedclaimslist
-      aliases: [listtrustedclaims, trustedclaimlist, listtrustedclaim, listrustedclaims]
-      permission: griefprevention.claims
-    claimexpire:
-      description: Allows you to view or alter claim expiration extensions
-      usage: /claimexpire <check|delay> [player...] <days>
-      aliases: [expireclaim]
+  claimslist:
+    description: Lists information about a player's claim blocks and claims.
+    usage: /ClaimsList or /ClaimsList <player>
+    aliases: [claimlist, listclaims]
+    permission: griefprevention.claims
+  nameclaim:
+    description: Name a claim for easy recognition in /claimlist
+    usage: /NameClaim <name> - Name a claim for easy recognition in /claimslist
+    aliases: [claimname]
+    permission: griefprevention.claims
+  trustedclaimslist:
+    description: List claims you are /trusted to.
+    usage: /trustedclaimslist
+    aliases: [listtrustedclaims, trustedclaimlist, listtrustedclaim, listrustedclaims]
+    permission: griefprevention.claims
+  claimexpire:
+    description: Allows you to view or alter claim expiration extensions
+    usage: /claimexpire <check|delay> [player...] <days>
+    aliases: [expireclaim]
+  claimtop:
+    description: Prints a list of players, sorted by claimblock totals
+    usage: /claimtop <page>

@@ -37,7 +37,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     @Override
     public void registerCommand()
     {
-        plugin.getCommand("trustedclaimslist").setExecutor(this);
+        plugin.getCommand("claimtop").setExecutor(this);
     }
 
     @Override
