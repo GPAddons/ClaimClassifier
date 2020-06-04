@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
@@ -65,8 +66,9 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                         int totalBlocks = Integer.parseInt(iterator.next()) + Integer.parseInt(iterator.next());
                         uuidClaimblockMap.put(file.getName(), totalBlocks);
                     }
-                    catch (IOException | NumberFormatException e)
+                    catch (IOException | NumberFormatException | NoSuchElementException e)
                     {
+                        plugin.getLogger().warning("Skipping file " + file.getName() + " due to this ''Java-termed reason:''");
                         e.printStackTrace();
                         continue;
                     }
