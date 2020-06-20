@@ -1,5 +1,7 @@
 package com.robomwm.claimslistclassifier.command;
 
+import co.aikar.taskchain.TaskChain;
+import co.aikar.taskchain.TaskChainFactory;
 import com.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -28,6 +30,8 @@ import java.util.UUID;
 public class ClaimTopCommand extends CommandBase implements CommandExecutor
 {
     ClaimslistClassifier plugin;
+    List<Map.Entry<String, Integer>> sorted;
+    TaskChainFactory taskChainFactory;
 
     public ClaimTopCommand(ClaimslistClassifier plugin, GriefPrevention griefPrevention, DataStore dataStore)
     {
@@ -44,47 +48,71 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                sender.sendMessage("Claimblock totals");
+        if (args.length > 0 && sorted != null)
+            return printPage(args[0]);
 
-                File playerDataFolder = new File("plugins" + File.separator + "GriefPreventionData" +
-                        File.separator + "PlayerData");
+        File playerDataFolder = new File("plugins" + File.separator + "GriefPreventionData" +
+                File.separator + "PlayerData");
 
-                Map<String, Integer> uuidClaimblockMap = new HashMap<>();
+        File[] files = playerDataFolder.listFiles();
 
-                for (File file : playerDataFolder.listFiles())
+        sender.sendMessage("Ordering claimblock totals of " + files.length + " players, please wait...");
+
+        TaskChain chain = taskChainFactory.newChain();
+
+        chain.async(() ->
                 {
-                    try
-                    {
-                        List<String> lines = Files.readAllLines(file.toPath());
-                        Iterator<String> iterator = lines.iterator();
-                        iterator.next();
-                        int totalBlocks = Integer.parseInt(iterator.next()) + Integer.parseInt(iterator.next());
-                        uuidClaimblockMap.put(file.getName(), totalBlocks);
-                    }
-                    catch (IOException | NumberFormatException | NoSuchElementException e)
-                    {
-                        plugin.getLogger().warning("Skipping file " + file.getName() + " due to this ''Java-termed reason:''");
-                        e.printStackTrace();
-                        continue;
-                    }
-                }
+                    Map<String, Integer> uuidClaimblockMap = new HashMap<>();
 
-                //Thank you EssX baltop for preventing me from doing something complicated
-                //lambdas are interesting
-                List<Map.Entry<String, Integer>> sorted = new ArrayList<>(uuidClaimblockMap.entrySet());
-                sorted.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-                for (Map.Entry<String, Integer> entry : sorted)
+                    for (File file : playerDataFolder.listFiles())
+                    {
+                        try
+                        {
+                            List<String> lines = Files.readAllLines(file.toPath());
+                            Iterator<String> iterator = lines.iterator();
+                            iterator.next();
+                            int totalBlocks = Integer.parseInt(iterator.next()) + Integer.parseInt(iterator.next());
+                            uuidClaimblockMap.put(file.getName(), totalBlocks);
+                        }
+                        catch (IOException | NumberFormatException | NoSuchElementException e)
+                        {
+                            plugin.getLogger().warning("Skipping file " + file.getName());
+                            //e.printStackTrace();
+                            continue;
+                        }
+                        chain.setTaskData("uuidClaimblockMap", uuidClaimblockMap);
+                    }
+                }).sync(() ->
                 {
-                    sender.sendMessage(entry.getKey() + ": " + entry.getValue());
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+                    //Thank you EssX baltop
+                    //lambdas are interesting
+                    sorted = new ArrayList<>(((Map<String, Integer>)(chain.getTaskData("uuidClaimblockMap"))).entrySet());
+                    sorted.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+                    sender.sendMessage("Claimblock totals");
+                    sender.sendMessage( " ---- Claimtop -- Page 1/" + (int)Math.ceil((double)sorted.size() / 10) + " ----");
+                    int start = 0;
+                    for (int i = 0; i < Math.min(9, sorted.size() - start); i++)
+                    {
+                        Map.Entry<String, Integer> entry = sorted.get(i);
+                        sender.sendMessage(entry.getKey() + ": " + entry.getValue());
+                    }
+                }).execute();
         return true;
+    }
+
+    public boolean printPage(String pageNumber)
+    {
+        int page;
+
+        try
+        {
+            page = Integer.parseInt(pageNumber);
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
+        return false;
     }
 }

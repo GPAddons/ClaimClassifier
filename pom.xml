@@ -24,6 +24,10 @@
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
     </repositories>
     <build>
         <finalName>${project.name}</finalName>
@@ -46,6 +50,8 @@
                     <artifactSet>
                         <includes>
                             <include>org.bstats:bstats-bukkit</include>
+                            <include>co.aikar:taskchain-bukkit</include>
+                            <include>co.aikar:taskchain-core</include>
                         </includes>
                     </artifactSet>
                     <minimizeJar>true</minimizeJar>
@@ -53,6 +59,10 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>com.robomwm.claimslistclassifier</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.taskchain</pattern>
+                            <shadedPattern>com.robomwm.midnightportal.taskchain</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -86,6 +96,11 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>1.7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>taskchain-bukkit</artifactId>
+            <version>3.7.2</version>
         </dependency>
     </dependencies>
 
