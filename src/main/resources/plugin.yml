@@ -27,4 +27,4 @@ commands:
     aliases: [expireclaim]
   claimtop:
     description: Prints a list of players, sorted by claimblock totals
-    usage: /claimtop <page>
+    usage: /claimtop [page]
