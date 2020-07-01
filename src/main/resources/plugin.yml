@@ -1,7 +1,7 @@
 name: ClaimslistClassifier
 main: com.robomwm.claimslistclassifier.ClaimslistClassifier
 depend: [GriefPrevention]
-version: '${project.version}'
+version: '${project.version}-${git.commit.id.abbrev}'
 author: RoboMWM
 website: https://github.com/robomwm
 api-version: '1.13'

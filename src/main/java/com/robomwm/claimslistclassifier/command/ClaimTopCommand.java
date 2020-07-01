@@ -1,5 +1,6 @@
 package com.robomwm.claimslistclassifier.command;
 
+import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 import com.robomwm.claimslistclassifier.ClaimslistClassifier;
@@ -37,6 +38,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     {
         super(plugin, griefPrevention, dataStore);
         this.plugin = plugin;
+        taskChainFactory = BukkitTaskChainFactory.create(plugin);
     }
 
     @Override
