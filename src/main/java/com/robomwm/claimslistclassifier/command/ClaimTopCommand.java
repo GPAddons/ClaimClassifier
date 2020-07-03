@@ -113,12 +113,13 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
     public void print(CommandSender sender, int page, String label)
     {
-        sender.sendMessage( " ---- Claimtop -- Page " + page + "/" + (int)Math.ceil((double)sorted.size() / 10) + " ----");
-        int start = (page - 1) * 9;
-        for (int i = start; i < Math.min(start + 9, sorted.size() - 1); i++)
+        int maxPerPage = 10;
+        sender.sendMessage( " ---- Claimtop -- Page " + page + "/" + (int)Math.ceil((double)sorted.size() / maxPerPage) + " ----");
+        int start = (page - 1) * maxPerPage;
+        for (int i = start; i < Math.min(start + maxPerPage, sorted.size() - 1); i++)
         {
             Map.Entry<String, Integer> entry = sorted.get(i);
-            sender.sendMessage(entry.getKey() + ": " + entry.getValue());
+            sender.sendMessage(i + 1 + ". " + entry.getKey() + ": " + entry.getValue());
         }
         sender.sendMessage("Type /" + label + " " + ++page + " to read the next page.");
     }
