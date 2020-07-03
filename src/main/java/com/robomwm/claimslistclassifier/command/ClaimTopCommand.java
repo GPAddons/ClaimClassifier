@@ -9,8 +9,6 @@ import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 /**
  * Created on 5/28/2020.
@@ -51,7 +48,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (args.length > 0 && sorted != null)
-            return printPage(sender, args[0]);
+            return parseAndPrintPage(sender, args[0], label);
 
         File playerDataFolder = new File("plugins" + File.separator + "GriefPreventionData" +
                 File.separator + "PlayerData");
@@ -92,18 +89,12 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                     sorted.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
                     sender.sendMessage("Claimblock totals");
-                    sender.sendMessage( " ---- Claimtop -- Page 1/" + (int)Math.ceil((double)sorted.size() / 10) + " ----");
-                    int start = 0;
-                    for (int i = start; i < Math.min(start + 9, sorted.size() - 1); i++)
-                    {
-                        Map.Entry<String, Integer> entry = sorted.get(i);
-                        sender.sendMessage(entry.getKey() + ": " + entry.getValue());
-                    }
+                    print(sender, 1, label);
                 }).execute();
         return true;
     }
 
-    public boolean printPage(CommandSender sender, String pageNumber)
+    public boolean parseAndPrintPage(CommandSender sender, String pageNumber, String label)
     {
         int page;
 
@@ -116,11 +107,18 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
             return false;
         }
 
+        print(sender, page, label);
+    }
+
+    public void print(CommandSender sender, int page, String label)
+    {
+        sender.sendMessage( " ---- Claimtop -- Page " + page + "/" + (int)Math.ceil((double)sorted.size() / 10) + " ----");
         int start = (page - 1) * 9;
         for (int i = start; i < Math.min(start + 9, sorted.size() - 1); i++)
         {
             Map.Entry<String, Integer> entry = sorted.get(i);
             sender.sendMessage(entry.getKey() + ": " + entry.getValue());
         }
+        sender.sendMessage("Type /" + label + " " + ++page + " to read the next page.");
     }
 }
