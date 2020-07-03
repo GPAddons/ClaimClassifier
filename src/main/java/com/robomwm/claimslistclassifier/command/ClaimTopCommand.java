@@ -51,7 +51,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
     {
         if (args.length > 0 && sorted != null)
-            return printPage(args[0]);
+            return printPage(sender, args[0]);
 
         File playerDataFolder = new File("plugins" + File.separator + "GriefPreventionData" +
                 File.separator + "PlayerData");
@@ -94,7 +94,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                     sender.sendMessage("Claimblock totals");
                     sender.sendMessage( " ---- Claimtop -- Page 1/" + (int)Math.ceil((double)sorted.size() / 10) + " ----");
                     int start = 0;
-                    for (int i = 0; i < Math.min(9, sorted.size() - start); i++)
+                    for (int i = start; i < Math.min(start + 9, sorted.size() - 1); i++)
                     {
                         Map.Entry<String, Integer> entry = sorted.get(i);
                         sender.sendMessage(entry.getKey() + ": " + entry.getValue());
@@ -103,7 +103,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
         return true;
     }
 
-    public boolean printPage(String pageNumber)
+    public boolean printPage(CommandSender sender, String pageNumber)
     {
         int page;
 
@@ -115,6 +115,12 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
         {
             return false;
         }
-        return false;
+
+        int start = (page - 1) * 9;
+        for (int i = start; i < Math.min(start + 9, sorted.size() - 1); i++)
+        {
+            Map.Entry<String, Integer> entry = sorted.get(i);
+            sender.sendMessage(entry.getKey() + ": " + entry.getValue());
+        }
     }
 }
