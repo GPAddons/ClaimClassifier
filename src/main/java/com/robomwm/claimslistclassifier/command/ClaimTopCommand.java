@@ -108,6 +108,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
         }
 
         print(sender, page, label);
+        return true;
     }
 
     public void print(CommandSender sender, int page, String label)
