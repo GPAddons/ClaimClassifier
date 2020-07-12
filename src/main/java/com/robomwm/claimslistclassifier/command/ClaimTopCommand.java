@@ -62,6 +62,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
         chain.async(() ->
                 {
                     Map<String, Integer> uuidClaimblockMap = new HashMap<>();
+                    long total = 0;
 
                     for (File file : playerDataFolder.listFiles())
                     {
@@ -72,6 +73,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                             iterator.next();
                             int totalBlocks = Integer.parseInt(iterator.next()) + Integer.parseInt(iterator.next());
                             uuidClaimblockMap.put(file.getName(), totalBlocks);
+                            total += totalBlocks;
                         }
                         catch (IOException | NumberFormatException | NoSuchElementException e)
                         {
@@ -86,11 +88,13 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                         list.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
 
                         chain.setTaskData("list", list);
+                        chain.setTaskData("total", total);
                     }
                 }).sync(() ->
                 {
                     sorted = (List<Map.Entry<String, Integer>>)(chain.getTaskData("list"));
 
+                    sender.sendMessage("Server Total: " + chain.getTaskData("total"));
                     sender.sendMessage("Claimblock totals");
                     print(sender, 1, label);
                 }).execute();
