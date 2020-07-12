@@ -79,14 +79,17 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                             //e.printStackTrace();
                             continue;
                         }
-                        chain.setTaskData("uuidClaimblockMap", uuidClaimblockMap);
+
+                        List<Map.Entry<String, Integer>> list = new ArrayList<>(uuidClaimblockMap.entrySet());
+                        //Thank you EssX baltop
+                        //lambdas are interesting
+                        list.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+                        chain.setTaskData("list", list);
                     }
                 }).sync(() ->
                 {
-                    //Thank you EssX baltop
-                    //lambdas are interesting
-                    sorted = new ArrayList<>(((Map<String, Integer>)(chain.getTaskData("uuidClaimblockMap"))).entrySet());
-                    sorted.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+                    sorted = (List<Map.Entry<String, Integer>>)(chain.getTaskData("list"));
 
                     sender.sendMessage("Claimblock totals");
                     print(sender, 1, label);
