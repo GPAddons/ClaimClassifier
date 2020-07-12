@@ -6,6 +6,7 @@ import co.aikar.taskchain.TaskChainFactory;
 import com.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,7 +56,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
         File[] files = playerDataFolder.listFiles();
 
-        sender.sendMessage("Ordering claimblock totals of " + files.length + " players, please wait...");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Ordering claimblock totals of &c" + files.length + " &6players, please wait..."));
 
         TaskChain chain = taskChainFactory.newChain();
 
@@ -94,8 +95,8 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                 {
                     sorted = (List<Map.Entry<String, Integer>>)(chain.getTaskData("list"));
 
-                    sender.sendMessage("Server Total: " + chain.getTaskData("total"));
-                    sender.sendMessage("Claimblock totals");
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6Server Total: &c" + chain.getTaskData("total")));
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6Top claimblock totals"));
                     print(sender, 1, label);
                 }).execute();
         return true;
@@ -121,13 +122,13 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
     public void print(CommandSender sender, int page, String label)
     {
         int maxPerPage = 10;
-        sender.sendMessage( " ---- Claimtop -- Page " + page + "/" + (int)Math.ceil((double)sorted.size() / maxPerPage) + " ----");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes( '&'," &e---- &6Claimtop &e-- &6Page &c" + page + "&6/&c" + (int)Math.ceil((double)sorted.size() / maxPerPage) + " &e----"));
         int start = (page - 1) * maxPerPage;
         for (int i = start; i < Math.min(start + maxPerPage, sorted.size() - 1); i++)
         {
             Map.Entry<String, Integer> entry = sorted.get(i);
             sender.sendMessage(i + 1 + ". " + entry.getKey() + ": " + entry.getValue());
         }
-        sender.sendMessage("Type /" + label + " " + ++page + " to read the next page.");
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&6Type &c/" + label + " " + ++page + " &6to read the next page."));
     }
 }
