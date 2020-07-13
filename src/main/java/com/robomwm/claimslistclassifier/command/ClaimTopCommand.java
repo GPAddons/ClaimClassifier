@@ -78,7 +78,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                         }
                         catch (IOException | NumberFormatException | NoSuchElementException e)
                         {
-                            plugin.getLogger().warning("Skipping file " + file.getName());
+                            //plugin.getLogger().warning("Skipping file " + file.getName());
                             //e.printStackTrace();
                             continue;
                         }
