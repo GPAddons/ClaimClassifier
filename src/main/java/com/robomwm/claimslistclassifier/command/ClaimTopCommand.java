@@ -111,7 +111,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
         try
         {
-            page = Math.abs(Integer.parseInt(pageNumber));
+            page = Math.max(1, Math.abs(Integer.parseInt(pageNumber)));
         }
         catch (NumberFormatException e)
         {
