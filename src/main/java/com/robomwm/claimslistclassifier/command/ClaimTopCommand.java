@@ -67,6 +67,9 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
                     for (File file : playerDataFolder.listFiles())
                     {
+                        if (file.getName().indexOf('.') > 0 && file.getName().substring(file.getName().indexOf('.')).equals("ignore"))
+                            continue;
+
                         try
                         {
                             List<String> lines = Files.readAllLines(file.toPath());
@@ -78,7 +81,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                         }
                         catch (IOException | NumberFormatException | NoSuchElementException e)
                         {
-                            //plugin.getLogger().warning("Skipping file " + file.getName());
+                            plugin.getLogger().warning("Skipping file " + file.getName());
                             //e.printStackTrace();
                             continue;
                         }
