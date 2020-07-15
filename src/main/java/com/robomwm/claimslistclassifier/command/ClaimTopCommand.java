@@ -6,6 +6,7 @@ import co.aikar.taskchain.TaskChainFactory;
 import com.robomwm.claimslistclassifier.ClaimslistClassifier;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -67,7 +68,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
                     for (File file : playerDataFolder.listFiles())
                     {
-                        if (file.getName().indexOf('.') > 0 && file.getName().substring(file.getName().indexOf('.')).equals("ignore"))
+                        if (FilenameUtils.getExtension(file.getName()).equals("ignore"))
                             continue;
 
                         try
