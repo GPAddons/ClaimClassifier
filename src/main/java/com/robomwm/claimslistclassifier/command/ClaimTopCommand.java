@@ -8,6 +8,7 @@ import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created on 5/28/2020.
@@ -59,11 +62,23 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
 
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Ordering claimblock totals of &c" + files.length + " &6players, please wait..."));
 
+        Map<UUID, String> uuidToName = new ConcurrentHashMap<>();
+
+        for (OfflinePlayer player : plugin.getServer().getOfflinePlayers())
+        {
+            String name = player.getName();
+
+            if (name == null)
+                continue;
+
+            uuidToName.put(player.getUniqueId(), name);
+        }
+
         TaskChain chain = taskChainFactory.newChain();
 
         chain.async(() ->
                 {
-                    Map<String, Integer> uuidClaimblockMap = new HashMap<>();
+                    Map<String, Integer> claimBlockMap = new HashMap<>();
                     long total = 0;
 
                     for (File file : playerDataFolder.listFiles())
@@ -77,7 +92,13 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                             Iterator<String> iterator = lines.iterator();
                             iterator.next();
                             int totalBlocks = Integer.parseInt(iterator.next()) + Integer.parseInt(iterator.next());
-                            uuidClaimblockMap.put(file.getName(), totalBlocks);
+
+                            UUID uuid = UUID.fromString(file.getName());
+                            String name = uuidToName.get(uuid);
+                            if (name == null)
+                                name = "Someone";
+
+                            claimBlockMap.put(name, totalBlocks);
                             total += totalBlocks;
                         }
                         catch (IOException | NumberFormatException | NoSuchElementException e)
@@ -87,7 +108,7 @@ public class ClaimTopCommand extends CommandBase implements CommandExecutor
                             continue;
                         }
 
-                        List<Map.Entry<String, Integer>> list = new ArrayList<>(uuidClaimblockMap.entrySet());
+                        List<Map.Entry<String, Integer>> list = new ArrayList<>(claimBlockMap.entrySet());
                         //Thank you EssX baltop
                         //lambdas are interesting
                         list.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
