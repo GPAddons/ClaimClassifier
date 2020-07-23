@@ -52,6 +52,7 @@
                             <include>org.bstats:bstats-bukkit</include>
                             <include>co.aikar:taskchain-bukkit</include>
                             <include>co.aikar:taskchain-core</include>
+                            <include>commons-io:commons-io</include>
                         </includes>
                     </artifactSet>
                     <minimizeJar>true</minimizeJar>
