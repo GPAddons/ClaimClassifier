@@ -45,7 +45,8 @@ public class NameClaimCommand implements CommandExecutor
         if (claim != null && claim.parent != null) //even more GP ugliness
             claim = claim.parent;
 
-        if (claim == null || !claim.ownerID.equals(player.getUniqueId())) //oof more legacy GP ugliness
+        //deny if player is not in a claim, is in an admin claim, or a claim they don't have permissions to edit
+        if (claim == null || claim.ownerID == null || claim.allowEdit(player) != null)
         {
             player.sendMessage(ChatColor.RED + "You must be inside a claim you own to use this command.");
             return true;
